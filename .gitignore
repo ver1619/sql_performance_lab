@@ -1,0 +1,16 @@
+# Dump
+*.dump
+*.backup
+*.bak  
+*.sql.gz
+
+# Logs
+*.log
+logs/
+
+#IDE
+.vscode
+
+# Windows
+Thumbs.db
+Desktop.ini
