@@ -1,4 +1,4 @@
-# Test 5: Partitioning 
+# Test 5: Partitioning and Partition Pruning
 
 ### Test Objective
 
