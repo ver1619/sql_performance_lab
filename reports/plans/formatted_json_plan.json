@@ -1,0 +1,9 @@
+{
+    "Planning Time": 0.117,
+    "Execution Time": 0.087,
+    "Node Type": "Bitmap Index Scan",
+    "Relation Name": "orders",
+    "Actual Rows": 15.00,
+    "Shared Hit Blocks": 3,
+    "Shared Read Blocks": 0
+}
