@@ -130,6 +130,7 @@ REFRESH MATERIALIZED VIEW customer_spending_mview;
 ### Performance Improvement
 
 **Execution Time**:
+
 $$
 \frac{25133.011}{12.529} \approx 2005.6
 $$
