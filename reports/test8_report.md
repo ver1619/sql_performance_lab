@@ -180,7 +180,7 @@ $$
 \frac{0.700}{0.067} \approx 10.45
 $$
 
-Result: **Full Index is ~10.45x faster than No Index**
+Result: Full Index is **~10.45x** faster than No Index
 
 **Partial Index vs No Index**
 
@@ -188,7 +188,7 @@ $$
 \frac{0.700}{0.059} \approx 11.86
 $$
 
-Result: **Partial Index is ~11.86x faster than No Index**
+Result: Partial Index is **~11.86x** faster than No Index
 
 **Partial Index vs Full Index**
 
@@ -196,7 +196,7 @@ $$
 \frac{0.067}{0.059} \approx 1.13
 $$
 
-Result: **Partial Index is ~1.13x faster than Full Index**
+Result: Partial Index is **~1.13x** faster than Full Index
 
 ---
 
