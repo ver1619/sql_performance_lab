@@ -1,0 +1,114 @@
+Benchmark Started: Thu Jun 25 12:50:20 IST 2026
+
+                                                               QUERY PLAN                                                               
+----------------------------------------------------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on orders  (cost=4.51..47.37 rows=11 width=29) (actual time=1.424..1.677 rows=11.00 loops=1)
+   Recheck Cond: (customer_id = 1000)
+   Heap Blocks: exact=11
+   Buffers: shared hit=17
+   ->  Bitmap Index Scan on idx_orders_customer_status  (cost=0.00..4.51 rows=11 width=0) (actual time=0.700..0.700 rows=11.00 loops=1)
+         Index Cond: (customer_id = 1000)
+         Index Searches: 1
+         Buffers: shared hit=6
+ Planning:
+   Buffers: shared hit=152
+ Planning Time: 21.446 ms
+ Execution Time: 5.258 ms
+(12 rows)
+
+                                                           QUERY PLAN                                                           
+--------------------------------------------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on orders  (cost=4.44..16.31 rows=3 width=29) (actual time=0.275..0.278 rows=2.00 loops=1)
+   Recheck Cond: ((customer_id = 1000) AND ((status)::text = 'DELIVERED'::text))
+   Heap Blocks: exact=2
+   Buffers: shared hit=5
+   ->  Bitmap Index Scan on idx_delivered_orders  (cost=0.00..4.44 rows=3 width=0) (actual time=0.235..0.235 rows=2.00 loops=1)
+         Index Cond: (customer_id = 1000)
+         Index Searches: 1
+         Buffers: shared hit=3
+ Planning:
+   Buffers: shared hit=8
+ Planning Time: 0.622 ms
+ Execution Time: 0.304 ms
+(12 rows)
+
+                                                           QUERY PLAN                                                            
+---------------------------------------------------------------------------------------------------------------------------------
+ Seq Scan on customer_spending_mview  (cost=0.00..1831.98 rows=99998 width=36) (actual time=0.116..18.610 rows=99998.00 loops=1)
+   Buffers: shared hit=832
+ Planning:
+   Buffers: shared hit=17
+ Planning Time: 1.797 ms
+ Execution Time: 25.367 ms
+(6 rows)
+
+                                                              QUERY PLAN                                                               
+---------------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=21931.69..25401.98 rows=92386 width=62) (actual time=691.033..787.938 rows=99998.00 loops=1)
+   Hash Cond: (customers.customer_id = orders.customer_id)
+   Buffers: shared hit=3884 read=4649
+   ->  Seq Scan on customers  (cost=0.00..2180.00 rows=100000 width=62) (actual time=0.086..23.102 rows=100000.00 loops=1)
+         Buffers: shared hit=1180
+   ->  Hash  (cost=20776.86..20776.86 rows=92386 width=8) (actual time=690.408..690.411 rows=99998.00 loops=1)
+         Buckets: 131072  Batches: 1  Memory Usage: 4931kB
+         Buffers: shared hit=2704 read=4649
+         ->  HashAggregate  (cost=19853.00..20776.86 rows=92386 width=8) (actual time=632.149..657.507 rows=99998.00 loops=1)
+               Group Key: orders.customer_id
+               Batches: 1  Memory Usage: 6681kB
+               Buffers: shared hit=2704 read=4649
+               ->  Seq Scan on orders  (cost=0.00..17353.00 rows=1000000 width=8) (actual time=2.170..208.774 rows=1000000.00 loops=1)
+                     Buffers: shared hit=2704 read=4649
+ Planning:
+   Buffers: shared hit=175
+ Planning Time: 8.883 ms
+ Execution Time: 798.501 ms
+(18 rows)
+
+                                                               QUERY PLAN                                                                
+-----------------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=21931.69..25401.98 rows=92386 width=62) (actual time=510.270..579.000 rows=99998.00 loops=1)
+   Hash Cond: (c.customer_id = o.customer_id)
+   Buffers: shared hit=3978 read=4555
+   ->  Seq Scan on customers c  (cost=0.00..2180.00 rows=100000 width=62) (actual time=0.030..8.591 rows=100000.00 loops=1)
+         Buffers: shared hit=1180
+   ->  Hash  (cost=20776.86..20776.86 rows=92386 width=8) (actual time=509.734..509.737 rows=99998.00 loops=1)
+         Buckets: 131072  Batches: 1  Memory Usage: 4931kB
+         Buffers: shared hit=2798 read=4555
+         ->  HashAggregate  (cost=19853.00..20776.86 rows=92386 width=8) (actual time=467.815..486.470 rows=99998.00 loops=1)
+               Group Key: o.customer_id
+               Batches: 1  Memory Usage: 6681kB
+               Buffers: shared hit=2798 read=4555
+               ->  Seq Scan on orders o  (cost=0.00..17353.00 rows=1000000 width=8) (actual time=0.216..133.821 rows=1000000.00 loops=1)
+                     Buffers: shared hit=2798 read=4555
+ Planning:
+   Buffers: shared hit=14
+ Planning Time: 0.483 ms
+ Execution Time: 588.722 ms
+(18 rows)
+
+                                                                     QUERY PLAN                                                                     
+----------------------------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=1788.86..21766.97 rows=167500 width=30) (actual time=15.381..359.719 rows=166717.00 loops=1)
+   Hash Cond: (o.customer_id = c.customer_id)
+   Buffers: shared hit=4088 read=4461
+   ->  Seq Scan on orders o  (cost=0.00..17353.00 rows=1000000 width=16) (actual time=0.232..98.480 rows=1000000.00 loops=1)
+         Buffers: shared hit=2892 read=4461
+   ->  Hash  (cost=1579.48..1579.48 rows=16750 width=22) (actual time=14.913..14.914 rows=16693.00 loops=1)
+         Buckets: 32768  Batches: 1  Memory Usage: 1151kB
+         Buffers: shared hit=1196
+         ->  Bitmap Heap Scan on customers c  (cost=190.10..1579.48 rows=16750 width=22) (actual time=3.002..9.380 rows=16693.00 loops=1)
+               Recheck Cond: ((city)::text = 'Bangalore'::text)
+               Heap Blocks: exact=1180
+               Buffers: shared hit=1196
+               ->  Bitmap Index Scan on idx_customers_city  (cost=0.00..185.92 rows=16750 width=0) (actual time=2.670..2.670 rows=16693.00 loops=1)
+                     Index Cond: ((city)::text = 'Bangalore'::text)
+                     Index Searches: 1
+                     Buffers: shared hit=16
+ Planning:
+   Buffers: shared hit=17
+ Planning Time: 0.564 ms
+ Execution Time: 370.091 ms
+(20 rows)
+
+
+Benchmark Completed: Thu Jun 25 12:50:25 IST 2026
